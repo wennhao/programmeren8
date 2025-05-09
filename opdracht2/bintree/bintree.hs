@@ -5,7 +5,7 @@ push Empty _value = Node _value Empty Empty
 push (Node _current _left _right) _value = if _value <= _current then Node _current (push _left _value) _right else Node _current _left (push _right _value)
 
 pushlist::(Ord a) => (Bintree a) -> [a] -> (Bintree a)
-pushlist _top _values = head $ reverse (map (push _top) _values)
+pushlist _top _values = foldl push _top _values
 
 maptree::(a -> b) -> (Bintree a) -> (Bintree b)
 maptree _ Empty = Empty
