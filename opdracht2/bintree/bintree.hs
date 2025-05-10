@@ -1,4 +1,10 @@
-data Bintree a = Empty | Node a (Bintree a) (Bintree a) deriving Show
+module Main where
+
+import Data.Char
+import Data.List
+import System.Environment
+
+data Bintree a = Empty | Node a (Bintree a) (Bintree a) deriving (Show, Read)
 
 push::(Ord a) => (Bintree a) -> a -> (Bintree a)
 push Empty _value = Node _value Empty Empty
@@ -26,3 +32,23 @@ postorder (Node _value _left _right) = postorder _left ++ postorder _right ++ [_
 inorder::(Bintree a) -> [a]
 inorder Empty = []
 inorder (Node _value _left _right) = inorder _left ++ [_value] ++ inorder _right
+
+main::IO ()
+main = do
+    args <- getArgs
+    case args of
+        [file] -> do
+            text <- readFile file
+            let chartree = pushlist Empty text --All characters into a new tree
+            let inttree = maptree fromEnum chartree --Convert every character to ASCII
+            writeFile "tree.txt" (show inttree)
+            
+            readtree <- readFile "tree.txt"
+            let newtree = read readtree
+            let backtochartree = maptree chr newtree
+            let stringfromtree = concat [(inorder backtochartree)]
+            putStrLn stringfromtree
+
+            let onlynumbers = filtertree isDigit backtochartree
+            putStrLn onlynumbers
+        _ -> putStrLn "Wrong number of arguments"
