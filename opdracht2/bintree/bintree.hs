@@ -41,14 +41,14 @@ main = do
             text <- readFile file
             let chartree = pushlist Empty text --All characters into a new tree
             let inttree = maptree fromEnum chartree --Convert every character to ASCII
-            writeFile "tree.txt" (show inttree)
+            writeFile "tree.txt" (show inttree) --Write ASCII tree to "tree.txt"
             
-            readtree <- readFile "tree.txt"
-            let newtree = read readtree
-            let backtochartree = maptree chr newtree
-            let stringfromtree = concat [(inorder backtochartree)]
-            putStrLn stringfromtree
+            readtree <- readFile "tree.txt" --Read "tree.txt" and load it into readtree
+            let newtree = read readtree --newtree removes the "" from readtree
+            let backtochartree = maptree chr newtree --Convert ASCII back to char
+            let stringfromtree = concat [(inorder backtochartree)] --Concat the inorder list of all nodes
+            putStrLn stringfromtree --Output the inorder string
 
-            let onlynumbers = filtertree isDigit backtochartree
-            putStrLn onlynumbers
+            let onlynumbers = filtertree isDigit backtochartree --Filter numbers of the char tree
+            putStrLn onlynumbers --Output the numbers
         _ -> putStrLn "Wrong number of arguments"
