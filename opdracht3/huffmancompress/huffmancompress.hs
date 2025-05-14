@@ -31,14 +31,21 @@ main::IO ()
 main = do
     args <- getArgs
     case args of
-        [file, output, tree] -> do
+        [file, output, treefile] -> do
             text <- readFile file
             let charcount = [(grouped, length $ filter (== grouped) text) | grouped <- map head (group $ sort text)]
             let sortcount = reverse $ sortBy (comparing snd) charcount
             let tree = countlowestlist sortcount
             let table = converttree tree
-            let newtext = [getcharcode x table | x <- text]
-            putStrLn (concat newtext)
+            let newtext = concat [getcharcode x table | x <- text]
+            
+            putStrLn ("length of text "++(file)++": "++(show $ length text)++" characters, "++(show ((length text)*8))++" bits.")
+            putStrLn ("length of compressed file "++(output)++": "++(show $ length newtext)++" bits.")
+            putStrLn ("factor: "++(show $ length newtext)++"/"++(show ((length text)*8))++"*100="++(show ((fromIntegral $ length newtext)/(fromIntegral $ (length text)*8)*100))++"%")
+
+            writeFile output newtext
+            writeFile treefile (show tree)
+            putStrLn ("compression completed.")
             
         _ -> putStrLn "Wrong number of arguments"
 
